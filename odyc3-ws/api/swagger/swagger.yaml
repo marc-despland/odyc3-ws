@@ -40,6 +40,23 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /winner:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: solution
+    get:
+      description: Return the winner
+      operationId: winner
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/WinnerResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
@@ -65,3 +82,7 @@ definitions:
         items: 
           type: integer
           format: int32
+  WinnerResponse:
+    properties:
+      winner:
+        type: string
