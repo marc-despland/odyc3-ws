@@ -7,6 +7,8 @@ module.exports = {
   winner: winner
 };
 
+var mogodburl="mongodb://odyc3:odyc3pwd@odyc3-db:27017/odyc3";
+
 function checkdb(db, callback) {
 	db.listCollections({name: 'response'}).toArray((err, items) => {
 		if (items.length==1) {
@@ -44,7 +46,7 @@ function checkResult(result) {
 
 
 function winner(req, res) {
-	MongoClient.connect('mongodb://172.17.0.3:27017/odyc3', (err, database) => {
+	MongoClient.connect(mogodburl, (err, database) => {
 		if (err) {
 			console.log(err);
 			res.statusCode=500;
@@ -67,7 +69,7 @@ function winner(req, res) {
 
 function play(req, res) {
 	if (checkResult(req.body.play)) {
-		MongoClient.connect('mongodb://172.17.0.3:27017/odyc3', (err, database) => {
+		MongoClient.connect(mogodburl, (err, database) => {
 			if (err) {
 				console.log(err);
 				res.statusCode=500;
@@ -81,17 +83,18 @@ function play(req, res) {
 					var solution={};
 					solution.email=req.body.email;
 					solution.rand=Math.random();
-					collection.updateOne({"email": req.body.email} , solution, {upsert:true, w: 1}, (err, result) => {
+					//collection.updateOne({"email": req.body.email} , solution, {upsert:true, w: 1}, (err, result) => {
+					collection.insertOne(solution, (err, result) => {
 						if (err) {
-							if (err.code==11000) {
+							/*if (err.code==11000) {
 								console.log('duplicate key');
-							} else {
+							} else {*/
 								database.close();
 								console.log(err);
 								res.statusCode=500;
 								var message={'message': 'We have a database issue'};
 								res.json(message);
-							}
+							//}
 						} else {
 							database.close();
 							console.log('saved to database');
