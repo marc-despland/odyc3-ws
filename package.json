@@ -1,5 +1,5 @@
 {
-  "name": "voxgenie-api",
+  "name": "odyc3-ws",
   "version": "0.0.1",
   "private": true,
   "description": "New Swagger API Project",
@@ -9,21 +9,13 @@
   "main": "app.js",
   "dependencies": {
     "express": "^4.12.3",
-    "konphyg": "^1.4.0",
-    "mysql": "^2.9.0",
-    "node-rest-client": "^1.8.0",
-    "stringify-object": "^2.3.1",
+    "mongodb": "^2.2.10",
     "swagger-express-mw": "^0.1.0",
-    "swagger-tools": "^0.9.9"
+    "swagger-tools": "^0.10.1"
   },
   "devDependencies": {
     "should": "^7.1.0",
-    "supertest": "^1.0.0",
-    "z-schema": "^3.12.0",
-    "request": "^2.58.0",
-    "chai": "^3.0.0",
-    "mocha": "^2.2.5",
-    "dotenv": "^1.2.0"
+    "supertest": "^1.0.0"
   },
   "scripts": {
     "start": "node app.js",
