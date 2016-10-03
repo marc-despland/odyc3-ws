@@ -17,6 +17,28 @@ consumes:
 produces:
   - application/json
 paths:
+  /status:
+    x-swagger-router-controller: solution
+    get:
+      description: Register a new solution proposual
+      operationId: status
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/StatusResponse"
+        # responses may fall through to errors
+        "500":
+          description: Error
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/StatusResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /solution:
     # binds a127 app logic to a route
     x-swagger-router-controller: solution
@@ -63,9 +85,18 @@ paths:
 definitions:
   OkResponse:
     required:
-      - message
+      - good
     properties:
-      message:
+      good:
+        type: boolean
+  StatusResponse:
+    required:
+      - status
+      - database
+    properties:
+      status:
+        type: string
+      database:
         type: string
   ErrorResponse:
     required:

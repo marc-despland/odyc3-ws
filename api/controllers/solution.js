@@ -3,11 +3,28 @@ var util = require('util');
 const MongoClient = require('mongodb').MongoClient;
 
 module.exports = {
+  status: status,
   play: play,
   winner: winner
 };
 
-var mogodburl="mongodb://odyc3:odyc3pwd@odyc3-db:27017/odyc3";
+
+//var mogodburl="mongodb://odyc3:odyc3pwd@odyc3-db:27017/odyc3";
+
+function mogodburl() {
+	var url="mongodb://";
+	var mongo_port = process.env.MONGODB_PORT || 27017;
+	var mongo_address = process.env.MONGODB_ADDRESS || 'database';
+	var mongo_user = process.env.MONGODB_USER || '';
+	var mongo_passwd = process.env.MONGODB_PASSWD || '';
+	var mongo_database = process.env.MONGODB_DATABASE || 'odyc3';
+	if (mongo_user === '') {
+		url += mongo_address +':'+mongo_port+'/'+mongo_database;
+	} else {
+		url += mongo_user+':'+mongo_passwd+'@'+mongo_address +':'+mongo_port+'/'+mongo_database;
+	}
+	return url;
+}
 
 function checkdb(db, callback) {
 	db.listCollections({name: 'response'}).toArray((err, items) => {
@@ -44,9 +61,28 @@ function checkResult(result) {
 	return res;
 }
 
+function status(req, res) {
+	MongoClient.connect(mogodburl(), (err, database) => {
+		if (err) {
+			console.log(err);
+			res.statusCode=500;
+			var status={"status": "ERROR", "database" : "ERROR"};
+			res.json(status);
+		} else {
+			console.log("we are connected");
+			res.statusCode=200;
+			var status={"status": "OK", "database" : "OK"};
+			database.close();
+			console.log(status);
+			res.json(status);
+		}
+	});
+}		
+
+
 
 function winner(req, res) {
-	MongoClient.connect(mogodburl, (err, database) => {
+	MongoClient.connect(mogodburl(), (err, database) => {
 		if (err) {
 			console.log(err);
 			res.statusCode=500;
@@ -69,7 +105,7 @@ function winner(req, res) {
 
 function play(req, res) {
 	if (checkResult(req.body.play)) {
-		MongoClient.connect(mogodburl, (err, database) => {
+		MongoClient.connect(mogodburl(), (err, database) => {
 			if (err) {
 				console.log(err);
 				res.statusCode=500;
@@ -98,8 +134,8 @@ function play(req, res) {
 						} else {
 							database.close();
 							console.log('saved to database');
-							var hello = util.format('OK');
-							res.json(hello);
+							var message={'good': true};
+							res.json(message);
 						}
 					});
 				});
@@ -107,7 +143,7 @@ function play(req, res) {
 		});
 	} else {
 		console.log('Wrong answer');
-		var hello = util.format('OK');
-		res.json(hello);
+		var message={'good': false};
+		res.json(message);
 	}
 }
